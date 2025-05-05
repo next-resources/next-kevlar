@@ -66,13 +66,16 @@ RegisterNetEvent('next-kevlar:equipVest', function(data)
     local hasVest = exports.ox_inventory:Search('count', itemName) > 0
     if not hasVest or not validItem then return end
 
-    if equippedVest?.carrierId == metadata.carrierId then
+    if equippedVest then
         PlayVestAnimation('remove')
         SetPedArmour(ped, 0)
         SetPedComponentVariation(ped, equippedVest.original.category, equippedVest.original.drawable, equippedVest.original.texture, 0)
-        equippedVest = nil
         pedArmor = 0
-        return
+
+        if equippedVest.carrierId == metadata.carrierId then
+            equippedVest = nil
+            return
+        end
     end
 
     equippedVest = {}
@@ -94,10 +97,10 @@ RegisterNetEvent('next-kevlar:equipVest', function(data)
     if vestAppearance then
         PlayVestAnimation('equip')
         SetPedComponentVariation(ped, vestAppearance.drawableCategory, vestAppearance.drawable, vestAppearance.texture, 0)
-        
+
         local totalArmor = 0
         plateMeta = metadata.plates
-        if next(plateMeta) then
+        if plateMeta and next(plateMeta) then
             for _, plate in ipairs(metadata.plates) do
                 if plate.health > 0 then
                     totalArmor += plate.health
@@ -119,7 +122,7 @@ RegisterNetEvent('next-kevlar:onMetadataUpdate', function(itemName, metadata)
 
     local totalArmor = 0
     plateMeta = data.metadata.plates
-    if next(plateMeta) then
+    if plateMeta and next(plateMeta) then
         for _, plate in ipairs(metadata.plates) do
             if plate.health > 0 then
                 totalArmor += plate.health
