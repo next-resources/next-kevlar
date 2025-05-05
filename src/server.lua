@@ -38,13 +38,14 @@ RegisterNetEvent('next-kevlar:openVest', function(data)
                     health = plate.health
                 }
             }
-            print(plate.health)
         end
     end
 
+    local plateType = metadata.plate_type or 'light'
+    local slots = plateType == 'heavy' and 3 or 2
     local stash = exports.ox_inventory:CreateTemporaryStash({
         label = 'Vest Plate Slots',
-        slots = 3,
+        slots = slots,
         maxWeight = 5000,
         owner = true,
         items = items
@@ -113,6 +114,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
                 return false
             end
         elseif vestStash == toInv then
+            if not Config.Plates[from.name] then return false end
             plates[to] = {
                 itemName = from.name,
                 health = from.metadata?.health
@@ -120,6 +122,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
         end
     elseif action == 'swap' then
         if vestStash == fromInv then
+            if not Config.Plates[to.name] then return false end
             if from.slot ~= 1 then
                 plates[from.slot] = {
                     itemName = to.name,
@@ -129,6 +132,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
                 return false
             end
         elseif vestStash == toInv then
+            if not Config.Plates[from.name] then return false end
             if to.slot ~= 1 then
                 plates[to.slot] = {
                     itemName = from.name,
@@ -140,10 +144,10 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
         end
     end
 
-    local vests = exports.ox_inventory:Search(source, 'slots', 'platecarrier')
     local targetVest
-    for _, vest in ipairs(vests) do
-        if vest.metadata?.carrierId == carrierId then
+    for name, _ in pairs(Config.PlateCarriers) do
+        local vest = exports.ox_inventory:GetSlotWithItem(source, name, {carrierId = carrierId}, false)
+        if vest then
             targetVest = vest
             break
         end
@@ -168,8 +172,10 @@ end, {
 })
 
 
+local ValidCarriers = {}
 -- Hooks that attaches unique metadata to each item on creation
 for item, carrier in pairs(Config.PlateCarriers) do
+    ValidCarriers[item] = true
     exports.ox_inventory:registerHook('createItem', function(payload)
         if payload.item.name ~= item then return end
         if payload.metadata?.carrierId then return end
@@ -183,16 +189,28 @@ for item, carrier in pairs(Config.PlateCarriers) do
     })
 end
 
-for _, plate in ipairs(Config.Plates) do
+exports.ox_inventory:registerHook('swapItems', function(payload)
+    local source = payload.source
+    local fromInv = payload.fromInventory
+    local toInv = payload.toInventory
+
+    if fromInv == source and toInv ~= source then
+        TriggerClientEvent('next-kevlar:droppedVest', source, payload.fromSlot.metadata)
+    end
+end, {
+    itemFilter = ValidCarriers
+})
+
+for item, plate in pairs(Config.Plates) do
     exports.ox_inventory:registerHook('createItem', function(payload)
-        if payload.item.name ~= plate.name then return end
+        if payload.item.name ~= item then return end
         if payload.metadata?.health then return end
     
         return {
             plate_type = plate.plateType,
-            health = plate.armor
+            health = math.min(50, math.max(0, plate.armor))
         }
     end, {
-        itemFilter = { [plate.name] = true }
+        itemFilter = { [item] = true }
     })
 end
