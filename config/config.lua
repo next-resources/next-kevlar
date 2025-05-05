@@ -6,8 +6,8 @@ Config = {}
 Config.SyncPlatesEveryHit = true 
 
 Config.PlateCarriers = {
-    ['platecarrier'] = { -- Item name (Should be the same as in the ox config!)
-        plateType = 'heavy', -- 'heavy' or 'light'. Heavy plate carriers support up to 100 armor (full bar), and light plate carriers support up to 50 armor (half bar).
+    ['heavypc'] = { -- Item name (Should be the same as in the ox config!)
+        plateType = 'heavy', -- 'heavy' or 'light'. Heavy plate carriers support 2 plates, and light plate carriers support 1 plate.
         clothing = {
             ['male'] = {
                 drawableCategory = 9, -- The clothing category the vest has.
@@ -21,17 +21,30 @@ Config.PlateCarriers = {
             }
         }
     },
+    ['lightpc'] = {
+        plateType = 'light',
+        clothing = {
+            ['male'] = {
+                drawableCategory = 9,
+                drawable = 75,
+                texture = 0
+            },
+            ['female'] = {
+                drawableCategory = 9,
+                drawable = 75,
+                texture = 0
+            }
+        }
+    },
 }
 
 Config.Plates = {
-    {
-        name = 'plate_heavy', -- Item name (Should be the same as in the ox config!)
-        plateType = 'heavy',
-        armor = 50,
+    ['heavyplate'] = { -- Item name (Should be the same as in the ox config!)
+        plateType = 'heavy', -- 'heavy' or 'light'. Heavy plate carriers support 2 plates, and light plate carriers support 1 plate.
+        armor = 50, -- Amount of armor to give when the plate is undamaged. Setting this value above 50 has no effect (since you can't exceed 100 armor)
     },
-    {
-        name = 'plate_light',
-        plateType = 'heavy',
+    ['lightplate'] = {
+        plateType = 'light',
         armor = 25,
     },
 }
