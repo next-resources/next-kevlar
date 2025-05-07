@@ -28,6 +28,7 @@ A fully modular Kevlar & plate carrier system for FiveM. Designed to integrate w
 ## 🧰 Installation
 
 1. **Clone or Download**
+
 *Disclaimer: Do not edit the resource name, unless you are willing to adapt the script to it yourself. Some functions, like exports, depend on a set resource name. The current name is preconfigured.*
 
 Download and install the resource. Make sure you add it to your resource.cfg for it to auto-start. *IMPORTANT: Make sure this resource starts AFTER ox_inventory!*
