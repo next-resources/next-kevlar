@@ -63,8 +63,17 @@ RegisterNetEvent('next-kevlar:syncArmor', function(itemName, carrier, meta)
 
     local filteredPlates = {}
     for _, plate in ipairs(meta or {}) do
-        if plate.health and plate.health > 0 then
-            filteredPlates[#filteredPlates + 1] = plate
+        if plate.health then
+            if plate.health > 0 then
+                filteredPlates[#filteredPlates + 1] = plate
+            else
+                if Config.UseBrokenPlates then
+                    filteredPlates[#filteredPlates + 1] = {
+                        itemName = Config.BrokenPlateItem,
+                        health = 0
+                    }
+                end
+            end
         end
     end
 
@@ -114,7 +123,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
                 return false
             end
         elseif vestStash == toInv then
-            if not Config.Plates[from.name] then return false end
+            if not Config.Plates[from.name] or from.name ~= Config.BrokenPlateItem then return false end
             plates[to] = {
                 itemName = from.name,
                 health = from.metadata?.health
@@ -122,7 +131,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
         end
     elseif action == 'swap' then
         if vestStash == fromInv then
-            if not Config.Plates[to.name] then return false end
+            if not Config.Plates[to.name] or to.name ~= Config.BrokenPlateItem then return false end
             if from.slot ~= 1 then
                 plates[from.slot] = {
                     itemName = to.name,
@@ -132,7 +141,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
                 return false
             end
         elseif vestStash == toInv then
-            if not Config.Plates[from.name] then return false end
+            if not Config.Plates[from.name] or from.name ~= Config.BrokenPlateItem then return false end
             if to.slot ~= 1 then
                 plates[to.slot] = {
                     itemName = from.name,
@@ -173,7 +182,6 @@ end, {
 
 
 local ValidCarriers = {}
--- Hooks that attaches unique metadata to each item on creation
 for item, carrier in pairs(Config.PlateCarriers) do
     ValidCarriers[item] = true
     exports.ox_inventory:registerHook('createItem', function(payload)
@@ -201,14 +209,14 @@ end, {
     itemFilter = ValidCarriers
 })
 
-for item, plate in pairs(Config.Plates) do
+for item, armor in pairs(Config.Plates) do
     exports.ox_inventory:registerHook('createItem', function(payload)
         if payload.item.name ~= item then return end
         if payload.metadata?.health then return end
     
         return {
-            plate_type = plate.plateType,
-            health = math.min(50, math.max(0, plate.armor))
+            itemName = item,
+            health = math.min(50, math.max(0, armor))
         }
     end, {
         itemFilter = { [item] = true }

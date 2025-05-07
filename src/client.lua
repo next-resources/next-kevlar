@@ -54,7 +54,6 @@ local function PlayVestAnimation(action)
     if success then return end
 end
 
-
 RegisterNetEvent('next-kevlar:equipVest', function(data)
     if not CanEquipVest() then return end
 
@@ -135,6 +134,16 @@ RegisterNetEvent('next-kevlar:onMetadataUpdate', function(itemName, metadata)
     pedArmor = armor
 end)
 
+RegisterNetEvent('next-kevlar:droppedVest', function(metadata)
+    if not equippedVest or equippedVest.carrierId ~= metadata.carrierId then return end
+
+    local ped = PlayerPedId()
+    SetPedArmour(ped, 0)
+    SetPedComponentVariation(ped, equippedVest.original.category, equippedVest.original.drawable, equippedVest.original.texture, 0)
+    pedArmor = 0
+    equippedVest = nil
+end)
+
 AddEventHandler('gameEventTriggered', function(name, args)
     if name ~= 'CEventNetworkEntityDamage' or not equippedVest then return end
 
@@ -160,7 +169,6 @@ AddEventHandler('gameEventTriggered', function(name, args)
 
             if plate.health <= 0 then
                 plateBroken = true
-                lib.notify({ title = 'Kevlar', description = 'A plate has shattered!', type = 'error' })
             end
 
             if armorLost <= 0 then break end
@@ -170,27 +178,4 @@ AddEventHandler('gameEventTriggered', function(name, args)
     if Config.SyncPlatesEveryHit or plateBroken then
         TriggerServerEvent('next-kevlar:syncArmor', equippedVest.itemName, equippedVest.carrierId, plateMeta)
     end
-end)
-
-RegisterCommand('testvest', function()
-    local ped = PlayerPedId()
-    local coords = GetEntityCoords(ped)
-    local boneIndex = GetPedBoneIndex(ped, 24816) -- SKEL_Spine3 (chest area)
-
-    local bonePos = GetWorldPositionOfEntityBone(ped, boneIndex)
-    local fromPos = bonePos + vector3(0.0, 0.0, 0.5) -- above chest
-    local toPos = bonePos
-
-    -- Simulate the shot (weapon hash, damage, etc.)
-    ShootSingleBulletBetweenCoords(
-        fromPos.x, fromPos.y, fromPos.z,
-        toPos.x, toPos.y, toPos.z,
-        30,             -- damage
-        true,           -- is lethal
-        `weapon_pistol`,-- weapon hash
-        -1,             -- owner (-1 = no one)
-        true,           -- is audibly suppressed
-        false,          -- is not synced to server
-        10000           -- speed
-    )
 end)
