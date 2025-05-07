@@ -11,7 +11,13 @@ Items = {
     consume = 0,
     client = {
         export = 'next-kevlar.useVest'
-    }
+    },
+    buttons = {{
+        label = "Manage Plates",
+        action = function(slot)
+            exports['next-kevlar']:managePlates(slot)
+        end
+    }}
 },
 
 ['lightpc'] = {
@@ -22,7 +28,13 @@ Items = {
     consume = 0,
     client = {
         export = 'next-kevlar.useVest'
-    }
+    },
+    buttons = {{
+        label = "Manage Plates",
+        action = function(slot)
+            exports['next-kevlar']:managePlates(slot)
+        end
+    }}
 },
 
 ['lightplate'] = {

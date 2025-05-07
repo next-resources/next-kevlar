@@ -4,30 +4,6 @@ CreateThread(function()
     exports.ox_inventory:displayMetadata('health', 'Plate Health')
 end)
 
-exports('useVest', function(data, slot)
-    lib.registerContext({
-        id = 'vest_menu',
-        title = 'Kevlar Vest Options',
-        options = {
-            {
-                title = 'Equip/Remove Plate Carrier',
-                description = 'Equips or removes your plate carrier',
-                icon = 'vest',
-                event = 'next-kevlar:equipVest',
-                args = {slot = slot}
-            },
-            {
-                title = 'Manage Plates',
-                description = 'Opens the vest to manage plates',
-                icon = 'shield',
-                serverEvent = 'next-kevlar:openVest',
-                args = {slot = slot.slot}
-            }
-        }
-    })
-    lib.showContext('vest_menu')
-end)
-
 local function PlayVestAnimation(action)
     local ped = PlayerPedId()
     local dict = 'clothingtie'
@@ -54,12 +30,12 @@ local function PlayVestAnimation(action)
     if success then return end
 end
 
-RegisterNetEvent('next-kevlar:equipVest', function(data)
+exports('useVest', function(item, data)
     if not CanEquipVest() then return end
 
     local ped = PlayerPedId()
-    local itemName = data.slot.name
-    local metadata = data.slot.metadata
+    local itemName = data.name
+    local metadata = data.metadata
 
     local validItem = Config.PlateCarriers[itemName]
     local hasVest = exports.ox_inventory:Search('count', itemName) > 0
@@ -111,6 +87,11 @@ RegisterNetEvent('next-kevlar:equipVest', function(data)
         SetPedArmour(ped, armor)
         pedArmor = armor
     end
+end)
+
+exports('managePlates', function(slot)
+    exports.ox_inventory:closeInventory()
+    TriggerServerEvent('next-kevlar:openVest', slot)
 end)
 
 RegisterNetEvent('next-kevlar:onMetadataUpdate', function(itemName, metadata)

@@ -5,9 +5,9 @@ if not usingOx then
     return
 end
 
-RegisterNetEvent('next-kevlar:openVest', function(data)
-    local slot = data?.slot
+RegisterNetEvent('next-kevlar:openVest', function(slot)
     local itemdata = exports.ox_inventory:GetSlot(source, slot)
+    
     if not slot or not itemdata?.metadata then
         PunishPlayer(source, 'Invalid vest parameters provided.')
         return
@@ -17,7 +17,7 @@ RegisterNetEvent('next-kevlar:openVest', function(data)
         PunishPlayer(source, 'Invalid vest item parsed.')
         return
     end
-
+    
     local metadata = itemdata.metadata
     local items = {
         {
@@ -50,7 +50,7 @@ RegisterNetEvent('next-kevlar:openVest', function(data)
         owner = true,
         items = items
     })
-
+    
     TriggerClientEvent('ox_inventory:openInventory', source, 'stash', stash)
 end)
 
