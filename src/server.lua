@@ -122,7 +122,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
                 return false
             end
         elseif vestStash == toInv then
-            if not Config.Plates[from.name] or from.name ~= Config.BrokenPlateItem then return false end
+            if not Config.Plates[from.name] and from.name ~= Config.BrokenPlateItem then return false end
             plates[to] = {
                 itemName = from.name,
                 health = from.metadata?.health
@@ -130,7 +130,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
         end
     elseif action == 'swap' then
         if vestStash == fromInv then
-            if not Config.Plates[to.name] or to.name ~= Config.BrokenPlateItem then return false end
+            if not Config.Plates[to.name] and to.name ~= Config.BrokenPlateItem then return false end
             if from.slot ~= 1 then
                 plates[from.slot] = {
                     itemName = to.name,
@@ -140,7 +140,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
                 return false
             end
         elseif vestStash == toInv then
-            if not Config.Plates[from.name] or from.name ~= Config.BrokenPlateItem then return false end
+            if not Config.Plates[from.name] and from.name ~= Config.BrokenPlateItem then return false end
             if to.slot ~= 1 then
                 plates[to.slot] = {
                     itemName = from.name,
