@@ -35,7 +35,7 @@ RegisterNetEvent('next-kevlar:openVest', function(data)
                 1,
                 {
                     itemName = plate.itemName,
-                    health = plate.health
+                    health = plate.health or 0
                 }
             }
         end
@@ -69,8 +69,7 @@ RegisterNetEvent('next-kevlar:syncArmor', function(itemName, carrier, meta)
             else
                 if Config.UseBrokenPlates then
                     filteredPlates[#filteredPlates + 1] = {
-                        itemName = Config.BrokenPlateItem,
-                        health = 0
+                        itemName = Config.BrokenPlateItem
                     }
                 end
             end
