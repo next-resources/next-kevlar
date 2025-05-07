@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'The Next Team | github.com/next-resources'
+author 'The Next Team | discord.nextextended.com'
 description 'An advanced kevlar plate system by Next Scripts.'
-version '1.0.0'
+version '1.0.1'
 lua54 'yes'
 
 shared_scripts {
