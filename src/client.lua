@@ -107,7 +107,7 @@ RegisterNetEvent('next-kevlar:equipVest', function(data)
             end
         end
 
-        armor = math.min(totalArmor, 100)
+        local armor = math.min(totalArmor, 100)
         SetPedArmour(ped, armor)
         pedArmor = armor
     end
@@ -129,7 +129,7 @@ RegisterNetEvent('next-kevlar:onMetadataUpdate', function(itemName, metadata)
         end
     end
 
-    armor = math.min(totalArmor, 100)
+    local armor = math.min(totalArmor, 100)
     SetPedArmour(PlayerPedId(), armor)
     pedArmor = armor
 end)
