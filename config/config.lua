@@ -2,8 +2,12 @@ Config = {}
 
 -- For performance reasons on bigger servers, we'd recommend you set this to false.
 -- If you are a smaller server that doesn't mind some extra server events being triggered, you can opt to enable this.
--- With it disabled, plate health won't sync, only if the plate breaks.
-Config.SyncPlatesEveryHit = true 
+-- With it disabled, plate health won't sync if it receives damage, only if the plate breaks.
+Config.SyncPlatesEveryHit = true
+
+-- If true, a plate item will be converted to a broken plate item if it breaks. If false, it will disappear.
+Config.UseBrokenPlates = true
+Config.BrokenPlateItem = 'brokenplate'
 
 Config.PlateCarriers = {
     ['heavypc'] = { -- Item name (Should be the same as in the ox config!)
@@ -38,13 +42,7 @@ Config.PlateCarriers = {
     },
 }
 
-Config.Plates = {
-    ['heavyplate'] = { -- Item name (Should be the same as in the ox config!)
-        plateType = 'heavy', -- 'heavy' or 'light'. Heavy plate carriers support 2 plates, and light plate carriers support 1 plate.
-        armor = 50, -- Amount of armor to give when the plate is undamaged. Setting this value above 50 has no effect (since you can't exceed 100 armor)
-    },
-    ['lightplate'] = {
-        plateType = 'light',
-        armor = 25,
-    },
+Config.Plates = { -- Item name should be the same as in the ox config!
+    ['heavyplate'] = 50, -- Amount of armor to give when the plate is undamaged. Setting this value above 50 has no effect (since you can't exceed 100 (=2x50) armor)
+    ['lightplate'] = 25,
 }
