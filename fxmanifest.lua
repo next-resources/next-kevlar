@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'The Next Team | discord.nextextended.com'
 description 'An advanced kevlar plate system by Next Scripts.'
-version '1.0.1'
+version '1.0.2'
 lua54 'yes'
 
 shared_scripts {
