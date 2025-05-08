@@ -27,11 +27,11 @@ A fully modular Kevlar & plate carrier system for FiveM. Designed to integrate w
 
 ## 🧰 Installation
 
-1. **Clone or Download**
+1. **Download the latest release**
+
+Unpack the release and remove the release tag so only `next-kevlar` remains. Make sure you add it to your resource.cfg for it to auto-start. *IMPORTANT: Make sure this resource starts AFTER ox_inventory!*
 
 *Disclaimer: Do not edit the resource name, unless you are willing to adapt the script to it yourself. Some functions, like exports, depend on a set resource name. The current name is preconfigured.*
-
-Download and install the resource. Make sure you add it to your resource.cfg for it to auto-start. *IMPORTANT: Make sure this resource starts AFTER ox_inventory!*
 
 2. **Navigate to the installation folder**
 
