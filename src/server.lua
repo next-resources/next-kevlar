@@ -1,3 +1,9 @@
+local waited = 0
+while GetResourceState('ox_inventory') ~= 'started' and waited < 10000 do
+    Wait(500)
+    waited += 500
+end
+
 local usingOx = GetResourceState('ox_inventory') == 'started'
 
 if not usingOx then
@@ -19,6 +25,16 @@ RegisterNetEvent('next-kevlar:openVest', function(slot)
     end
     
     local metadata = itemdata.metadata
+
+    if not metadata.carrierId then
+        metadata = {
+            carrierId = 'carrier_' .. os.time() .. math.random(1000, 9999),
+            plate_type = Config.PlateCarriers[itemdata.name].plateType
+        }
+        
+        exports.ox_inventory:SetMetadata(source, itemdata.slot, metadata)
+    end
+
     local items = {
         {
             itemdata.name,
@@ -80,6 +96,22 @@ RegisterNetEvent('next-kevlar:syncArmor', function(itemName, carrier, meta)
     exports.ox_inventory:SetMetadata(source, data.slot, data.metadata)
 end)
 
+lib.callback.register('next-kevlar:registerCarrier', function(source, slot)
+    local data = exports.ox_inventory:GetSlot(source, slot)
+    if not data or not Config.PlateCarriers[data.name] then
+        PunishPlayer(source, 'Tried to register a plate carrier using an executor.')
+        return
+    end
+
+    local metadata = {
+        carrierId = 'carrier_' .. os.time() .. math.random(1000, 9999),
+        plate_type = Config.PlateCarriers[data.name].plateType
+    }
+
+    exports.ox_inventory:SetMetadata(source, data.slot, metadata)
+    return metadata
+end)
+
 -- Hook that detects inserting or removing plates into the plate carriers
 exports.ox_inventory:registerHook('swapItems', function(payload)
     local source = payload.source
@@ -117,7 +149,15 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
     if action == 'move' then
         if vestStash == fromInv then
             if from.slot ~= 1 then
-                plates[from.slot] = nil
+                if fromInv == toInv then
+                    plates[from.slot] = nil
+                    plates[to] = {
+                        itemName = from.name,
+                        health = from.metadata?.health
+                    }
+                else
+                    plates[from.slot] = nil
+                end
             else
                 return false
             end
@@ -131,13 +171,24 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
     elseif action == 'swap' then
         if vestStash == fromInv then
             if not Config.Plates[to.name] and to.name ~= Config.BrokenPlateItem then return false end
-            if from.slot ~= 1 then
+            if fromInv == toInv then
                 plates[from.slot] = {
                     itemName = to.name,
                     health = to.metadata?.health
                 }
+                plates[to.slot] = {
+                    itemName = from.name,
+                    health = from.metadata?.health
+                }
             else
-                return false
+                if from.slot ~= 1 then
+                    plates[from.slot] = {
+                        itemName = to.name,
+                        health = to.metadata?.health
+                    }
+                else
+                    return false
+                end
             end
         elseif vestStash == toInv then
             if not Config.Plates[from.name] and from.name ~= Config.BrokenPlateItem then return false end

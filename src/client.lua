@@ -37,6 +37,10 @@ exports('useVest', function(item, data)
     local itemName = data.name
     local metadata = data.metadata
 
+    if not metadata.carrierId then
+        metadata = lib.callback.await('next-kevlar:registerCarrier', false, data.slot)
+    end
+
     local validItem = Config.PlateCarriers[itemName]
     local hasVest = exports.ox_inventory:Search('count', itemName) > 0
     if not hasVest or not validItem then return end
