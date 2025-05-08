@@ -172,6 +172,7 @@ exports.ox_inventory:registerHook('swapItems', function(payload)
         if vestStash == fromInv then
             if not Config.Plates[to.name] and to.name ~= Config.BrokenPlateItem then return false end
             if fromInv == toInv then
+                if not Config.Plates[from.name] then return false end
                 plates[from.slot] = {
                     itemName = to.name,
                     health = to.metadata?.health
