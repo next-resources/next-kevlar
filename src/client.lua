@@ -81,7 +81,7 @@ exports('useVest', function(item, data)
         plateMeta = metadata.plates
         if plateMeta and next(plateMeta) then
             for _, plate in ipairs(metadata.plates) do
-                if plate.health > 0 then
+                if plate.health and plate.health > 0 then
                     totalArmor += plate.health
                 end
             end
