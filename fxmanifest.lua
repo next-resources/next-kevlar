@@ -20,3 +20,5 @@ server_scripts {
     'config/sv_functions.lua',
     'src/server.lua'
 }
+
+dependency 'ox_inventory'
